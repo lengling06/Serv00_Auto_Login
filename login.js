@@ -1,6 +1,22 @@
 const fs = require('fs');
 const puppeteer = require('puppeteer');
 
+const browser = await puppeteer.launch({
+  headless: 'new',  // 使用新版 Headless 模式
+  executablePath: process.env.CHROME_BIN || null, // 显式指定 Chromium 路径
+  args: [
+    '--disable-dev-shm-usage',     // 防止内存不足
+    '--disable-accelerated-2d-canvas',
+    '--no-first-run',              // 跳过首次运行向导
+    '--disable-gpu',               // GPU 兼容性优化
+    '--use-gl=swiftshader'         // 软件渲染后备方案
+  ],
+  env: {
+    ...process.env,
+    DISPLAY: ':99'                 // 显式指定 xvfb 的显示端口
+  }
+});
+
 function formatToISO(date) {
   return date.toISOString().replace('T', ' ').replace('Z', '').replace(/\.\d{3}Z/, '');
 }
